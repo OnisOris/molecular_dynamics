@@ -7,9 +7,12 @@ output/*
 !output/plots/
 output/plots/*
 !output/plots/.gitkeep
+!output/plots/task1/
+!output/plots/task1/*.png
 !output/animations/
 output/animations/*
 !output/animations/.gitkeep
 !output/data/
 output/data/*
 !output/data/.gitkeep
+!output/data/task1_summary.txt
