@@ -189,7 +189,23 @@ uv run python -m experiments.task5_uq
 ```
 
 Для короткой проверки можно передать `--steps`, `--equilibration-steps` и
-`--production-steps`. Полные sweep и equilibrium runs требуют заметного
+`--production-steps`. Для Task 1:
+
+```bash
+# smoke/test run: 2 ps
+uv run python -m experiments.task1_periodic --steps 2000
+
+# production/analysis run: 50 ps
+uv run python -m experiments.task1_periodic --steps 50000
+
+# intermediate validation run: 20 ps
+uv run python -m experiments.task1_periodic --steps 20000
+```
+
+Smoke-run сохраняет численный summary в `output/data/task1_summary.txt`.
+В summary явно разделены заданная `T_target`, измеренная `T_initial`,
+относительный energy drift, статистика температуры и давления, а также
+ideal-gas reference values. Полные sweep и equilibrium runs требуют заметного
 времени, потому что параметры не подгоняются под ожидаемый ответ.
 
 ## Тесты и производительность
@@ -202,6 +218,9 @@ Brute-force backend `O(N^2)` является эталоном. Cell-list backen
 для production после сравнения force, energy и virial с brute-force. Тесты
 проверяют LJ, LJTS cutoff, знак силы, Newton's third law, minimum image, PBC,
 zero COM momentum, initial temperature, reproducibility, NVE energy drift,
-cell-list equality и fixed-wall behavior.
+cell-list equality для плотных конфигураций, PBC-edge/cutoff cases и
+fixed-wall behavior. Для Task 1 дополнительно строится график
+`(E(t)-E0)/|E0|`, а на pressure plot наносится только reference line
+идеального газа, не используемая для подгонки simulation.
 
 Все графики, CSV и GIF сохраняются в `output/`.

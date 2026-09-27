@@ -12,7 +12,11 @@ import numpy as np
 J_TO_EV = 1.0 / 1.602_176_634e-19
 
 
-def save_task1_plots(history: dict[str, np.ndarray], output_dir: Path) -> None:
+def save_task1_plots(
+    history: dict[str, np.ndarray],
+    output_dir: Path,
+    ideal_pressure_2d: float | None = None,
+) -> None:
     output_dir.mkdir(parents=True, exist_ok=True)
     time_ps = history["time"] * 1.0e12
     plots = [
@@ -25,6 +29,13 @@ def save_task1_plots(history: dict[str, np.ndarray], output_dir: Path) -> None:
     for key, title, ylabel, scale in plots:
         figure, axis = plt.subplots(figsize=(7, 4))
         axis.plot(time_ps, history[key] * scale, label=key.replace("_", " "))
+        if key == "pressure_2d" and ideal_pressure_2d is not None:
+            axis.axhline(
+                ideal_pressure_2d,
+                color="tab:red",
+                linestyle="--",
+                label="ideal-gas reference",
+            )
         axis.set_title(title)
         axis.set_xlabel("time (ps)")
         axis.set_ylabel(ylabel)
@@ -33,6 +44,38 @@ def save_task1_plots(history: dict[str, np.ndarray], output_dir: Path) -> None:
         figure.tight_layout()
         figure.savefig(output_dir / f"{key}_vs_time.png", dpi=150)
         plt.close(figure)
+
+    figure, axis = plt.subplots(figsize=(7, 4))
+    for key, label in (
+        ("total_energy", "total"),
+        ("kinetic_energy", "kinetic"),
+        ("potential_energy", "potential"),
+    ):
+        axis.plot(time_ps, history[key] * 1.0e18, label=label)
+    axis.set_title("Energy components")
+    axis.set_xlabel("time (ps)")
+    axis.set_ylabel("energy (10^-18 J)")
+    axis.legend()
+    axis.grid(alpha=0.25)
+    figure.tight_layout()
+    figure.savefig(output_dir / "energy_components_vs_time.png", dpi=150)
+    plt.close(figure)
+
+    initial_energy = history["total_energy"][0]
+    relative_deviation = (
+        history["total_energy"] - initial_energy
+    ) / max(abs(initial_energy), 1.0e-30)
+    figure, axis = plt.subplots(figsize=(7, 4))
+    axis.plot(time_ps, relative_deviation, label="(E-E0)/|E0|")
+    axis.axhline(0.0, color="black", linewidth=0.8)
+    axis.set_title("Relative total-energy deviation")
+    axis.set_xlabel("time (ps)")
+    axis.set_ylabel("relative energy deviation")
+    axis.legend()
+    axis.grid(alpha=0.25)
+    figure.tight_layout()
+    figure.savefig(output_dir / "relative_energy_deviation_vs_time.png", dpi=150)
+    plt.close(figure)
 
 
 def save_task1_animation(

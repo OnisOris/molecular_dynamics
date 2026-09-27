@@ -5,8 +5,11 @@ __pycache__/
 output/*
 !output/.gitkeep
 !output/plots/
+output/plots/*
 !output/plots/.gitkeep
 !output/animations/
+output/animations/*
 !output/animations/.gitkeep
 !output/data/
+output/data/*
 !output/data/.gitkeep
