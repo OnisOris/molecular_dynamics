@@ -36,11 +36,16 @@ Nbox = N2D (24 nm)^2 / (10 cm)^2 = 1035.054
 
 - Масса K `39.0983 u`, или `6.49242546e-26 kg`: IUPAC/CIAAW atomic-weight
   data, также доступно через [PubChem potassium](https://pubchem.ncbi.nlm.nih.gov/element/Potassium).
-- Для K-K используется фиксированная LJ 12-6 параметризация из проверенной
-  литературной таблицы, принятой для этого варианта: `sigma=4.250 A` и
-  `epsilon/kB=850 K`. Температурно-зависимая параметризация Eslami не
-  используется, потому что тогда при temperature sweep менялся бы сам
-  Hamiltonian.
+- Для K-K используется фиксированная в учебной модели LJ 12-6 параметризация:
+  `sigma=4.250 A` и `epsilon/kB=850 K`. В исходных файлах проекта не найдено
+  библиографической ссылки, которая подтверждала бы именно эту пару значений;
+  поэтому она не объявляется точным универсальным потенциалом калия. Eslami,
+  Mozaffari и Moghadasi сравнивают LJ 12-6 с иными формами потенциала для
+  калия и подчёркивают ограничения простой парной модели: *J. Iranian Chem.
+  Soc.* **7** (2010), 308–317, DOI
+  [10.1007/bf03246015](https://doi.org/10.1007/bf03246015). Фиксированные
+  параметры нужны для того, чтобы в temperature sweep сохранялся один и тот
+  же Hamiltonian.
 - Для diamond carbon используется UFF `C_3` из Rappe et al., *UFF, a full
   periodic table force field for molecular mechanics and molecular dynamics
   simulations*, JACS 114 (1992), DOI
@@ -172,10 +177,17 @@ uniform distributions. Это не смешивается с sensitivity: `b` и
 
 ## Запуск
 
-Создать окружение и установить зависимости:
+Создать окружение и установить зависимости вычислительного ядра:
 
 ```bash
 uv sync
+```
+
+Для запуска учебных ноутбуков дополнительно установите JupyterLab и kernel:
+
+```bash
+uv sync --extra notebook
+uv run jupyter lab
 ```
 
 Запуски из корня проекта:
